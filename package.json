@@ -1,0 +1,40 @@
+{
+  "name": "combigen-api",
+  "version": "1.0.0",
+  "main": "dist/src/main",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc --project tsconfig.build.json",
+    "start": "node dist/src/main.js",
+    "lint": "eslint . --ext .ts",
+    "migrate": "npx ts-node scripts/migrate.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/x00dx/combigen-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/x00dx/combigen-api/issues"
+  },
+  "homepage": "https://gitlab.com/x00dx/combigen-api#readme",
+  "description": "",
+  "dependencies": {
+    "@nestjs/common": "^11.0.20",
+    "@nestjs/core": "^11.0.20",
+    "@nestjs/platform-express": "^11.0.20",
+    "class-validator": "^0.14.1",
+    "mysql2": "^3.14.0",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.20",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.14.1",
+    "eslint": "^9.25.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}
