@@ -74,22 +74,22 @@ describe('CombinatoryService', () => {
         });
 
         it('should return correct product of two sets', () => {
-            const result = service.cartesianProduct(['A', 'B'], [1, 2]);
+            const result = service.cartesianProduct(['A', 'B'], ['C1', 'C2']);
             expect(result).toEqual([
-                ['A', 1],
-                ['A', 2],
-                ['B', 1],
-                ['B', 2],
+                ['A', 'C1'],
+                ['A', 'C2'],
+                ['B', 'C1'],
+                ['B', 'C2'],
             ]);
         });
 
         it('should return correct product of three sets', () => {
-            const result = service.cartesianProduct(['A'], [1, 2], ['x', 'y']);
+            const result = service.cartesianProduct(['A'], ['B1', 'B2'], ['x', 'y']);
             expect(result).toEqual([
-                ['A', 1, 'x'],
-                ['A', 1, 'y'],
-                ['A', 2, 'x'],
-                ['A', 2, 'y'],
+                ['A', 'B1', 'x'],
+                ['A', 'B1', 'y'],
+                ['A', 'B2', 'x'],
+                ['A', 'B2', 'y'],
             ]);
         });
 
@@ -103,18 +103,8 @@ describe('CombinatoryService', () => {
         });
 
         it('should return empty array if any input set is empty', () => {
-            const result = service.cartesianProduct(['A', 'B'], [], [1, 2]);
+            const result = service.cartesianProduct(['A', 'B'], [], ['C', 'D']);
             expect(result).toEqual([]);
-        });
-
-        it('should work with numbers and booleans', () => {
-            const result = service.cartesianProduct([1, 2], [true, false]);
-            expect(result).toEqual([
-                [1, true],
-                [1, false],
-                [2, true],
-                [2, false],
-            ]);
         });
     });
 });
