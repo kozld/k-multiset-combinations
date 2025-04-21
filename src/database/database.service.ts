@@ -1,16 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PoolConnection } from 'mysql2/promise';
 
 @Injectable()
 export class DatabaseService {
     constructor(
-        private connection: PoolConnection,
-        private readonly logger = new Logger(DatabaseService.name)
+        @Inject('DBConnectionToken') private connection: PoolConnection,
     ) { }
 
-    // getConnection(): PoolConnection {
-    //     return this.connection;
-    // }
-
-    
+    async getLabelByType(typ: number) {
+        const [row] = await this.connection.query('SELECT label FROM items WHERE type = ?', typ);
+        return row[0]?.label;
+    }
 }

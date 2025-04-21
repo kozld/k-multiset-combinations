@@ -1,6 +1,6 @@
 import { createPool } from 'mysql2/promise';
 
-export const databaseProvider = {
+export const DatabaseProvider = {
     provide: 'DBConnectionToken',
     useFactory: () => createPool({
         host: process.env.DB_HOST,
