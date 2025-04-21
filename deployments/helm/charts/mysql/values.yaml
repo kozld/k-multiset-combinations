@@ -1,32 +1,37 @@
 replicaCount: 1
 image:
-  repository: postgres
-  tag: "17.2"
+  repository: mysql
+  tag: "lts"
   pullPolicy: IfNotPresent
 service:
   type: NodePort
-  port: 5432
+  port: 3306
 resources:
 env:
-  - name: POSTGRES_DB
+  - name: MYSQL_DATABASE
     valueFrom:
       secretKeyRef:
         name: db-secret
         key: name
-  - name: POSTGRES_USER
+  - name: MYSQL_USER
     valueFrom:
       secretKeyRef:
         name: db-secret
         key: user
-  - name: POSTGRES_PASSWORD
+  - name: MYSQL_PASSWORD
     valueFrom:
       secretKeyRef:
         name: db-secret
         key: password
+  - name: MYSQL_ROOT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: db-secret
+        key: root_password
 volumes:
-  - name: postgres-storage
+  - name: mysql-storage
     persistentVolumeClaim:
-      claimName: postgres-volume-claim
+      claimName: mysql-volume-claim
 volumeMounts:
-  - name: postgres-storage
-    mountPath: /var/lib/postgresql/data
+  - name: mysql-storage
+    mountPath: /var/lib/mysql

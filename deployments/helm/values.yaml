@@ -1,16 +1,16 @@
 replicaCount: 1
 image:
-  repository: tongineers/tonbet-backend
+  repository: x00dx/combigen-api
   tag: v0.0.1
   pullPolicy: IfNotPresent
 service:
   type: NodePort
-  port: 5001
+  port: 3000
 resources:
 ingress:
   enabled: false
   path: /
-  hostName: "tonbet.io"
+  hostName: ""
   annotations: {}
   tls: []
 

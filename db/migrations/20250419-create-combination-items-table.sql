@@ -1,3 +1,4 @@
+-- +++ UP +++
 CREATE TABLE IF NOT EXISTS combination_items (
     combination_id INT NOT NULL,
     item_id INT NOT NULL,
@@ -5,3 +6,6 @@ CREATE TABLE IF NOT EXISTS combination_items (
     FOREIGN KEY (combination_id) REFERENCES combinations(id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
 );
+
+-- +++ DOWN +++
+DROP TABLE IF EXISTS combination_items;

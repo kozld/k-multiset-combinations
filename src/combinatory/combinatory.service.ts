@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CombinatoryService {
-    constructor() {}
+    constructor() { }
 
     generateCombinations<T>(elements: T[], k: number): T[][] {
         const result: T[][] = [];
@@ -20,7 +20,22 @@ export class CombinatoryService {
             }
         }
 
-        dfs(0, []);
+        if (k > 0 && k <= elements.length) {
+            dfs(0, []);
+        }
+
         return result;
+    }
+
+    cartesianProduct<T>(...sets: T[][]): T[][] {
+        if (sets.length === 0) return [[]];
+
+        return sets.reduce<T[][]>(
+            (acc, currSet) =>
+                acc.flatMap(prevCombo =>
+                    currSet.map(item => [...prevCombo, item])
+                ),
+            [[]] // Начинаем с пустой комбинации
+        );
     }
 }
