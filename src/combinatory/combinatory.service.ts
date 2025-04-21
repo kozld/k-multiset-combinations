@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CombinatoryService {
-    constructor() { }
-
     generateCombinations<T>(elements: T[], k: number): T[][] {
         const result: T[][] = [];
 

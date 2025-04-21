@@ -6,11 +6,11 @@ import { GeneratorService } from './generator.service';
 @Controller('generate')
 export class GeneratorController {
     constructor(
-        private readonly combinationsService: GeneratorService,
+        private readonly generatorService: GeneratorService,
     ) {}
 
     @Post()
     async generateCombinations(@Body() generateCombinationsDto: GenerateCombinationsDto) {
-        await this.combinationsService.generateCombinations(generateCombinationsDto);
+        return this.generatorService.generateCombinations(generateCombinationsDto);
     }
 }

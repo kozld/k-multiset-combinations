@@ -1,0 +1,95 @@
+stages:
+  - lint
+  - test
+  - build
+  - docker
+  - package
+  - deploy
+
+variables:
+  NODE_ENV: development
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  IMAGE_NAME: registry.gitlab.com/$CI_PROJECT_PATH/app
+  HELM_RELEASE_NAME: my-app
+  HELM_NAMESPACE: default
+  CHART_PATH: ./helm-chart
+
+# 1. Lint
+lint:
+  stage: lint
+  image: node:20
+  script:
+    - npm ci
+    - npm run lint
+
+# 2. Tests
+test:
+  stage: test
+  image: node:20
+  script:
+    - npm ci
+    - npm run test
+
+# 3. Build NestJS app
+build:
+  stage: build
+  image: node:20
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+
+# 4. Build Docker image
+build-image:
+  stage: docker
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+  artifacts:
+    expire_in: 1 hour
+    reports:
+      dotenv: .env.deploy
+
+# 5. Push Docker image
+push-image:
+  stage: docker
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+# 6. Package Helm chart
+package:
+  stage: package
+  image: alpine/helm:3.14.0
+  script:
+    - helm dependency update $CHART_PATH
+    - helm package $CHART_PATH
+  artifacts:
+    paths:
+      - my-app-*.tgz
+
+# 7. Deploy to K8s (manual)
+deploy:
+  stage: deploy
+  image: alpine/helm:3.14.0
+  when: manual
+  only:
+    - main
+  environment:
+    name: production
+  before_script:
+    - echo "$KUBECONFIG_CONTENT" > kubeconfig.yaml
+    - export KUBECONFIG=$PWD/kubeconfig.yaml
+  script:
+    - helm upgrade --install $HELM_RELEASE_NAME my-app-*.tgz \
+        --namespace $HELM_NAMESPACE \
+        --set image.repository=$IMAGE_NAME \
+        --set image.tag=$IMAGE_TAG \
+        --create-namespace
