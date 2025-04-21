@@ -41,26 +41,14 @@ build:
     paths:
       - dist/
 
-# 4. Build Docker image
-build-image:
+# 4. Build & Push Docker image
+build-push-image:
   stage: docker
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
   script:
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
-  artifacts:
-    expire_in: 1 hour
-    reports:
-      dotenv: .env.deploy
-
-# 5. Push Docker image
-push-image:
-  stage: docker
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
-  script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker push $IMAGE_NAME:$IMAGE_TAG
 
