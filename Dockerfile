@@ -17,11 +17,21 @@ FROM ${RUNNER_IMAGE} AS runner
 
 WORKDIR /app
 
-# Only production-dependencies
+# only production-dependencies
 COPY package*.json ./
 RUN npm install --omit=dev
 
+# app's binaries
 COPY --from=builder /app/dist ./dist
+# database migrations
 COPY --from=builder /app/db ./db
+# usefull scripts
+COPY --from=builder /app/scripts ./scripts
 
-CMD ["node", "dist/index.js"]
+# for running scripts/migration.ts
+COPY tsconfig*.json ./
+
+# entrypoint
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
+CMD ["./start.sh"]
