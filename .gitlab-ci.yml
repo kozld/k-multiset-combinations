@@ -14,7 +14,7 @@ variables:
   HELM_NAMESPACE: default
   CHART_PATH: deployments/helm
 
-# 1. Lint- echo "Packaging chart at: $CHART_PATH"
+# Lint
 lint:
   stage: lint
   image: node:20
@@ -22,7 +22,7 @@ lint:
     - npm ci
     - npm run lint
 
-# 2. Tests
+# Tests
 test:
   stage: test
   image: node:20
@@ -30,7 +30,7 @@ test:
     - npm ci
     - npm run test
 
-# 3. Build NestJS app
+# Build NestJS app
 build:
   stage: build
   image: node:20
@@ -41,7 +41,7 @@ build:
     paths:
       - dist/
 
-# 4. Build & Push Docker image
+# Build & Push Docker image
 build-push-image:
   stage: docker
   image: docker:24.0.5
@@ -52,21 +52,22 @@ build-push-image:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker push $IMAGE_NAME:$IMAGE_TAG
 
-# 6. Package Helm chart
+# Package Helm chart
 package:
   stage: package
-  image: alpine/helm:3.14.0
+  image: 
+    name: lachlanevenson/k8s-helm:v3.10.2
+    entrypoint: [""]
   script:
-    - echo "Packaging chart at: $CHART_PATH"
     - helm package "$CHART_PATH"
   artifacts:
     paths:
       - ${CI_PROJECT_NAME}-*.tgz
 
-# 7. Deploy to K8s (manual)
+# Deploy to K8s (manual)
 deploy:
   stage: deploy
-  image: alpine/helm:3.14.0
+  image: lachlanevenson/k8s-helm:v3.10.2
   when: manual
   only:
     - main
