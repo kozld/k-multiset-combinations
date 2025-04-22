@@ -79,8 +79,4 @@ deploy:
     - echo "$KUBECONFIG_CONTENT" > kubeconfig.yaml
     - export KUBECONFIG=$PWD/kubeconfig.yaml
   script:
-    - helm upgrade --install $HELM_RELEASE_NAME ${CI_PROJECT_NAME}-*.tgz \
-        --namespace $HELM_NAMESPACE \
-        --set image.repository=$IMAGE_NAME \
-        --set image.tag=$IMAGE_TAG \
-        --create-namespace
+    - helm upgrade --install combigen-api combigen-api-0.1.0.tgz
