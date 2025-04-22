@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-volume-claim
+  name: mysql-volume-claim
 spec:
   storageClassName: manual
   accessModes:

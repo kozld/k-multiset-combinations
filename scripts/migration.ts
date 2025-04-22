@@ -18,7 +18,7 @@ async function main() {
   const command = args[0];
 
   const connection = await mysql.createConnection({
-    host: 'mysql',
+    host: 'combigen-api-mysql',
     user: 'user',
     password: 'password',
     database: 'mydb',

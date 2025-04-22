@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
-  repository: x00dx/combigen-api
-  tag: v0.0.1
+  repository: registry.gitlab.com/x00dx/combigen-api/app
+  tag: 93be8c7e
   pullPolicy: IfNotPresent
 service:
   type: NodePort
@@ -17,14 +17,10 @@ ingress:
 imagePullSecrets: []
 
 env:
-  - name: APP_PORT
-    value: 5000
-  - name: APP_HTTP_PORT
-    value: 5001
   - name: DB_HOST
-    value: tonbet-backend-postgres
+    value: combigen-api-mysql
   - name: DB_PORT
-    value: 5432
+    value: 3306
   - name: DB_NAME
     valueFrom:
       secretKeyRef:
@@ -40,48 +36,6 @@ env:
       secretKeyRef:
         name: db-secret
         key: password
-  - name: TON_LAST_TRANSACTION_LT
-    value: "28955831000003"
-  - name: TON_CONTRACT_ADDR
-    value: EQBdx6lPsOR_quNbfCZUiRgTIa08OosNaSUwnqhjkNFUzJSi
-  - name: TON_CONFIG_PATH
-    value: /var/opt/config/liteclient/testnet.json
-  - name: TON_SECRET_PATH
-    value: /var/opt/keys/secret.pk
-  - name: FIFTPATH
-    value: /usr/local/lib/fiftlib
-
-# config:
-#   app:
-#     port: 5000
-#     httpPort: 5001
-#   db:
-#     host: postgres-svc
-#     port: 5432
-#     name: xxx
-#     user: xxx
-#     password: xxx
-#   ton:
-#     contractAddr: EQBdx6lPsOR_quNbfCZUiRgTIa08OosNaSUwnqhjkNFUzJSi
-#     lastTransactionLt: 28955831000003
-#     configPath: /var/opt/config/liteclient/testnet.json
-#     secretPath: /var/opt/keys/secret.pk
-
-volumes:
-  - name: liteclient-config
-    hostPath:
-      path: /var/opt/config/liteclient/testnet.json
-      type: File
-  - name: secret-key
-    hostPath:
-      path: /var/opt/keys/secret.pk
-      type: File
-
-volumeMounts:
-  - name: liteclient-config
-    mountPath: /var/opt/config/liteclient/testnet.json
-  - name: secret-key
-    mountPath: /var/opt/keys/secret.pk
 
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
