@@ -67,7 +67,9 @@ package:
 # Deploy to K8s (manual)
 deploy:
   stage: deploy
-  image: lachlanevenson/k8s-helm:v3.10.2
+  image: 
+    name: lachlanevenson/k8s-helm:v3.10.2
+    entrypoint: [""]
   when: manual
   only:
     - main
