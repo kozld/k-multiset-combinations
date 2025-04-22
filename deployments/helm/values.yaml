@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: registry.gitlab.com/x00dx/combigen-api/app
-  tag: 93be8c7e
+  tag: 461887db
   pullPolicy: IfNotPresent
 service:
   type: NodePort
@@ -24,18 +24,18 @@ env:
   - name: DB_NAME
     valueFrom:
       secretKeyRef:
-        name: db-secret
-        key: name
+        name: mysql-secret
+        key: MYSQL_DATABASE
   - name: DB_USER
     valueFrom:
       secretKeyRef:
-        name: db-secret
-        key: user
+        name: mysql-secret
+        key: MYSQL_USER
   - name: DB_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: db-secret
-        key: password
+        name: mysql-secret
+        key: MYSQL_PASSWORD
 
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/

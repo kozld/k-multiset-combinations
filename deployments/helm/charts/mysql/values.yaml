@@ -1,37 +1,30 @@
 replicaCount: 1
 image:
   repository: mysql
-  tag: "lts"
+  tag: "8.0"
   pullPolicy: IfNotPresent
 service:
   type: NodePort
   port: 3306
 resources:
 env:
-  - name: MYSQL_DATABASE
-    valueFrom:
-      secretKeyRef:
-        name: db-secret
-        key: name
-  - name: MYSQL_USER
-    valueFrom:
-      secretKeyRef:
-        name: db-secret
-        key: user
-  - name: MYSQL_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: db-secret
-        key: password
   - name: MYSQL_ROOT_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: db-secret
-        key: root_password
-volumes:
-  - name: mysql-storage
-    persistentVolumeClaim:
-      claimName: mysql-volume-claim
-volumeMounts:
-  - name: mysql-storage
-    mountPath: /var/lib/mysql
+        name: mysql-secret
+        key: MYSQL_ROOT_PASSWORD
+  - name: MYSQL_USER
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: MYSQL_USER
+  - name: MYSQL_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: MYSQL_PASSWORD
+  - name: MYSQL_DATABASE
+    valueFrom:
+      secretKeyRef:
+        name: mysql-secret
+        key: MYSQL_DATABASE
