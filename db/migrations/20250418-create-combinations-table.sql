@@ -1,8 +1,0 @@
--- +++ UP +++
-CREATE TABLE IF NOT EXISTS combinations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- +++ DOWN +++
-DROP TABLE IF EXISTS combinations;
