@@ -14,14 +14,14 @@ services:
       - app-network
 
   mysql:
-    image: mysql:lts
+    image: "mysql:8.0"
     container_name: mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: user52
+      MYSQL_PASSWORD: 13131313
     ports:
       - "3306:3306"
     volumes:

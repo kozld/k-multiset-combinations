@@ -1,0 +1,14 @@
+replicaCount: 1
+image:
+  repository: phpmyadmin/phpmyadmin
+  tag: "5.2"
+  pullPolicy: IfNotPresent
+service:
+  type: NodePort
+  port: 80
+resources:
+env:
+  - name: PMA_HOST
+    value: combigen-api-mysql
+  - name: PMA_PORT
+    value: 3306

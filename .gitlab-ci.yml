@@ -79,4 +79,4 @@ deploy:
     - echo "$KUBECONFIG_CONTENT" > kubeconfig.yaml
     - export KUBECONFIG=$PWD/kubeconfig.yaml
   script:
-    - helm upgrade --install combigen-api combigen-api-0.1.0.tgz
+    - helm upgrade --install combigen-api combigen-api-0.1.0.tgz --set image.tag=$IMAGE_TAG

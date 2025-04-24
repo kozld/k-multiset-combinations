@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
-  repository: registry.gitlab.com/x00dx/combigen-api/app
-  tag: 461887db
+  repository: registry.gitlab.com/x00dx/combigen-api
+  tag: "dd8dff5d"
   pullPolicy: IfNotPresent
 service:
   type: NodePort
