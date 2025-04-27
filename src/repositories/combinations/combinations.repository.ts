@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { Connection, ResultSetHeader } from 'mysql2/promise';
+import type { Connection, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 type Combination = string[];
 
@@ -7,45 +7,68 @@ type Combination = string[];
 export class CombinationsRepository {
     constructor(
         @Inject('DBConnectionToken') private connection: Connection,
-    ) { }
+    ) {}
 
-    async insertCombinations(
-        hash: string,
-        body: object,
-        combinations: Combination[]
+    /**
+     * Вставка данных в три связанные таблицы в рамках транзакции
+     * Вставки в таблицы combinations и items выполняются одним запросом (bulk-insert)
+     * 
+     * @param combinations    Массив комбинаций
+     * @param requestBodyRaw  JSON тела запроса
+     * @param responseBodyRaw JSON тела ответа
+     */
+    public async insertTransactionBulk(
+        combinations: Combination[],
+        requestBodyRaw: string,
+        responseBodyRaw: string,
     ): Promise<number> {
-        const jsonBody = JSON.stringify(body);
-
         try {
             await this.connection.beginTransaction();
 
-            // 1. Insert into responses
+            // 1. Вставляем запись в responses
             const [responseResult] = await this.connection.execute<ResultSetHeader>(
-                `INSERT INTO responses (hash, body) VALUES (?, ?)`,
-                [hash, jsonBody]
+                `INSERT INTO responses (request_body_raw, response_body_raw) VALUES (?, ?)`,
+                [requestBodyRaw, responseBodyRaw]
             );
             const responseId = responseResult.insertId;
 
-            for (const labels of combinations) {
-                // 2. Insert into combinations
-                const [combResult] = await this.connection.execute<ResultSetHeader>(
-                    `INSERT INTO combinations (response_id) VALUES (?)`,
-                    [responseId]
-                );
-                const combinationId = combResult.insertId;
+            // 2. Вставляем все combinations одним запросом
+            const combinationsValues = combinations.map(() => [responseId]);
+            await this.connection.query<ResultSetHeader>(
+                `INSERT INTO combinations (response_id) VALUES ?`,
+                [combinationsValues]
+            );
 
-                // 3. Insert items for this combination
-                const values = labels.map(label => [combinationId, label]);
-                if (values.length > 0) {
-                    await this.connection.query(
-                        `INSERT INTO items (combination_id, label) VALUES ?`,
-                        [values]
-                    );
+            // 3. Чтение combination ids
+            const [comboRows] = await this.connection.query<RowDataPacket[]>(
+                `SELECT id FROM combinations
+                WHERE response_id = ? ORDER BY id ASC`,
+                [responseId]
+            );
+
+            const combinationIds: number[] = comboRows.map(row => row.id);
+            if (combinationIds.length !== combinations.length) {
+                throw new Error('Mismatch in combinations inserted and fetched!');
+            }
+
+            // 4. Вставляем все items одним запросом
+            const itemsValues: [number, string][] = [];            
+            combinations.forEach((labels, index) => {
+                const combinationId = combinationIds[index]!;
+                for (const label of labels) {
+                    itemsValues.push([combinationId, label]);
                 }
+            });
+
+            if (itemsValues.length > 0) {
+                await this.connection.query(
+                    `INSERT INTO items (combination_id, label) VALUES ?`,
+                    [itemsValues]
+                );
             }
 
             await this.connection.commit();
-            console.log('✅ Transaction committed');
+            console.log('✅ Bulk transaction committed');
             return responseId;
         } catch (err) {
             await this.connection.rollback();

@@ -15,7 +15,9 @@ export class CombinationsController {
     @ApiBody({ type: GenerateCombinationsDto })
     @ApiResponse({ status: 201, description: 'Комбинации успешно созданы и сохранены в БД' })
     @Post('/generate')
-    async generateCombinations(@Body() generateCombinationsDto: GenerateCombinationsDto) {
+    async generateCombinations(
+        @Body() generateCombinationsDto: GenerateCombinationsDto,
+    ) {
         return this.combinationsService.generateCombinations(generateCombinationsDto);
     }
 }
