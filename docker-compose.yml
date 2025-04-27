@@ -3,7 +3,7 @@ version: "3.9"
 services:
   app:
     build: .
-    container_name: combigen-api
+    container_name: k-multiset-combinations
     env_file:
       - .env
     ports:

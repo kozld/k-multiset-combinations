@@ -1,4 +1,4 @@
-# combigen-api
+# k-multiset-combinations
 
 Сервис для генерации комбинаторных сочетаний (k-комбинаций) из мультимножества.
 
@@ -74,7 +74,7 @@ GET /api/v1/status HTTP/1.1
 {
     "status": "ok",
     "uptime": 41686.426413128,
-    "hostname": "combigen-api-55dc657d57-qwpvc",
+    "hostname": "k-multiset-combinations-55dc657d57-qwpvc",
     "timestamp": "2025-04-25T07:49:59.226Z",
     "commitHash": "283d431cf2f50eb7f2944607545751d8c827db0c"
 }

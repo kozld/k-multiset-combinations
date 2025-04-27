@@ -1,5 +1,5 @@
 {
-  "name": "combigen-api",
+  "name": "k-multiset-combinations",
   "version": "1.0.0",
   "scripts": {
     "dev": "tsx watch src/app/main.ts",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/x00dx/combigen-api.git"
+    "url": "git+ssh://git@gitlab.com/x00dx/k-multiset-combinations.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/x00dx/combigen-api/issues"
+    "url": "https://gitlab.com/x00dx/k-multiset-combinations/issues"
   },
-  "homepage": "https://gitlab.com/x00dx/combigen-api#readme",
+  "homepage": "https://gitlab.com/x00dx/k-multiset-combinations#readme",
   "description": "",
   "dependencies": {
     "@nestjs/common": "^11.0.20",

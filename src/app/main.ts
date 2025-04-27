@@ -11,7 +11,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
-    .setTitle('combigen-api')
+    .setTitle('k-multiset-combinations')
     .setDescription('description will be here...')
     .setVersion('1.0')
     .addTag('commit_hash')

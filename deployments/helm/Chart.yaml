@@ -1,6 +1,6 @@
 ---
 apiVersion: v2
-name: combigen-api
+name: k-multiset-combinations
 description: A Helm chart for Kubernetes
 
 type: application
