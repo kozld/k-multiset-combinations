@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, Max } from 'class-validator';
 
-// Количество букв в латинском алфавите.
-const LatinAlphabetCount = 26;
-
 // Порядковый номер элемента списка соответствует идентификатору типа в БД.
 // Значение элемента списка соответствует количеству элементов данного типа.
 export class GenerateCombinationsDto {
@@ -16,7 +13,7 @@ export class GenerateCombinationsDto {
     })
     readonly items!: number[];
 
-    @IsNumber() @Max(LatinAlphabetCount)
+    @IsNumber() @Max(26)
     @ApiProperty({
         description: 'Длина комбинации',
         example: 2

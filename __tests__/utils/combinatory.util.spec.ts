@@ -1,4 +1,4 @@
-import { cartesianProduct, dfsCombinations } from "@/utils/combinatory";
+import { cartesianProduct, dfsCombinations } from "@/library/combinations";
 
 describe('Combinatory library', () => {
     it('should generate all combinations of length 2', () => {
