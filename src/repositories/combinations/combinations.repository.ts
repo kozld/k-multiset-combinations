@@ -3,6 +3,9 @@ import type { Connection, RowDataPacket, ResultSetHeader } from 'mysql2/promise'
 
 type Combination = string[];
 
+// Размер порции данных для единовременной вставки
+const BATCH_SIZE = 10_000;
+
 @Injectable()
 export class CombinationsRepository {
     constructor(
@@ -32,12 +35,18 @@ export class CombinationsRepository {
             );
             const responseId = responseResult.insertId;
 
-            // 2. Вставляем все combinations одним запросом
-            const combinationsValues = combinations.map(() => [responseId]);
-            await this.connection.query<ResultSetHeader>(
-                `INSERT INTO combinations (response_id) VALUES ?`,
-                [combinationsValues]
-            );
+            // 2. Вставка combinations порциями размером BATCH_SIZE
+            for (let i = 0; i < combinations.length; i += BATCH_SIZE) {
+                const batch = combinations.slice(i, i + BATCH_SIZE);
+                const combinationsValues = batch.map(() => [responseId]);
+
+                console.log('starts inserting combinations batch...');
+                await this.connection.query<ResultSetHeader>(
+                    `INSERT INTO combinations (response_id) VALUES ?`,
+                    [combinationsValues]
+                );
+                console.log('combinations batch inserted');
+            }
 
             // 3. Чтение combination ids
             const [comboRows] = await this.connection.query<RowDataPacket[]>(
@@ -51,20 +60,26 @@ export class CombinationsRepository {
                 throw new Error('Mismatch in combinations inserted and fetched!');
             }
 
-            // 4. Вставляем все items одним запросом
-            const itemsValues: [number, string][] = [];            
-            combinations.forEach((labels, index) => {
-                const combinationId = combinationIds[index]!;
-                for (const label of labels) {
-                    itemsValues.push([combinationId, label]);
-                }
-            });
+            // 4. Вставка items порциями размером BATCH_SIZE
+            for (let i = 0; i < combinations.length; i += BATCH_SIZE) {
+                const batch = combinations.slice(i, i + BATCH_SIZE);
+                const itemsValues: [number, string][] = []; 
 
-            if (itemsValues.length > 0) {
-                await this.connection.query(
-                    `INSERT INTO items (combination_id, label) VALUES ?`,
-                    [itemsValues]
-                );
+                batch.forEach((labels, index) => {
+                    const combinationId = combinationIds[index + i]!;
+                    for (const label of labels) {
+                        itemsValues.push([combinationId, label]);
+                    }
+                });
+
+                if (itemsValues.length > 0) {
+                    console.log('starts inserting items batch...');
+                    await this.connection.query(
+                        `INSERT INTO items (combination_id, label) VALUES ?`,
+                        [itemsValues]
+                    );
+                    console.log('items batch inserted');
+                }
             }
 
             await this.connection.commit();
