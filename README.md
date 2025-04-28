@@ -84,11 +84,11 @@ GET /api/v1/status HTTP/1.1
 
 Дано мультимножество:
 
-<center>
+<div align="center">
 
 [![\\ M = \{ \underbrace{a_1, \dots, a_1}_{c_1}, \underbrace{a_2, \dots, a_2}_{c_2}, \dots, \underbrace{a_n, \dots, a_n}_{c_n} \},](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7B%20%5Cunderbrace%7Ba_1%2C%20%5Cdots%2C%20a_1%7D_%7Bc_1%7D%2C%20%5Cunderbrace%7Ba_2%2C%20%5Cdots%2C%20a_2%7D_%7Bc_2%7D%2C%20%5Cdots%2C%20%5Cunderbrace%7Ba_n%2C%20%5Cdots%2C%20a_n%7D_%7Bc_n%7D%20%5C%7D%2C)](#_)
 
-</center>
+</div>
 
 где [![\\ c_i](https://latex.codecogs.com/svg.latex?%5C%5C%20c_i)](#_) — количество элементов типа [![\\ a_i](https://latex.codecogs.com/svg.latex?%5C%5C%20a_i)](#_).  
 
@@ -99,8 +99,8 @@ GET /api/v1/status HTTP/1.1
 - [![\\ M = \{A_1, B_1, B_2, C_1\},](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7BA_1%2C%20B_1%2C%20B_2%2C%20C_1%5C%7D%2C)](#_)  
 - [![\\ k = 2:](https://latex.codecogs.com/svg.latex?%5C%5C%20k%20%3D%202%3A)](#_)  
 
-<center>
+<div align="center">
 
 [![\\ {[A_1, B_1], [A_1, B_2], [A_1, C_1], [B_1, C_1], [B_2, C_1]}. \\  \\ ](https://latex.codecogs.com/svg.latex?%5C%5C%20%7B%5BA_1%2C%20B_1%5D%2C%20%5BA_1%2C%20B_2%5D%2C%20%5BA_1%2C%20C_1%5D%2C%20%5BB_1%2C%20C_1%5D%2C%20%5BB_2%2C%20C_1%5D%7D.%20%5C%5C%20%20%5C%5C%20)](#_)
 
-</center>
+</div>
