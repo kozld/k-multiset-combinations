@@ -55,6 +55,7 @@ REST API сервис для генерации комбинаторных со�
 
 ```bash
 cat <<EOF > .env
+export APP_PORT=3000
 export DB_HOST=localhost
 export DB_PORT=3306
 export DB_USER=user52
