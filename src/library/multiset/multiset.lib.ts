@@ -11,7 +11,7 @@ export const uppercaseLetters: string[] = Array.from({ length: latinAlphabetCoun
 );
 
 /**
- * Разворачивает мультисет в массив массивов с учетом кратности элементов
+ * Разворачивает мультисет в массив массивов с учетом кратности (кардинальности) типов
  * 
  * @param set Например, [1, 2, 1] 
  * @return [['A1'], ['B1', 'B2'], ['C1']]
@@ -26,13 +26,16 @@ function unpackMultiplicity(set: Multiset): string[][] {
 }
 
 /**
+ * Выполняет поиск сочетаний типов из мультимножества применяя 
+ * алгоритм обхода DAG-графа в глубину (DFS) и последующее 
+ * прямое (декартово) произведение для учета кардинальности 
+ * каждого типа
  * 
- * 
- * @param multiset Multiset
- * @param k length
+ * @param mset Мультимножество
+ * @param k Длина комбинаций
  * @returns
  */
-export function kCombinationsMultiset(set: Multiset, k: number): string[][] {
+export function kCombinationsMultiset(mset: Multiset, k: number): string[][] {
     /**
      * Шаг 1.
      * 
@@ -43,7 +46,7 @@ export function kCombinationsMultiset(set: Multiset, k: number): string[][] {
      *   [['B1', 'B2'], ['C1']]   // Типы B, C 
      * ]
      */
-    const betweenTypes = dfsCombinations(unpackMultiplicity(set), k);
+    const betweenTypes = dfsCombinations(unpackMultiplicity(mset), k);
 
     /**
      * Шаг 2.
