@@ -84,5 +84,42 @@ GET /api/v1/status HTTP/1.1
 
 ## Уточненная постановка задачи
 
+Дано мультимножество:
+
+[![\\ M = \{ \underbrace{a_1, \dots, a_1}_{c_1}, \underbrace{a_2, \dots, a_2}_{c_2}, \dots, \underbrace{a_n, \dots, a_n}_{c_n} \},](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7B%20%5Cunderbrace%7Ba_1%2C%20%5Cdots%2C%20a_1%7D_%7Bc_1%7D%2C%20%5Cunderbrace%7Ba_2%2C%20%5Cdots%2C%20a_2%7D_%7Bc_2%7D%2C%20%5Cdots%2C%20%5Cunderbrace%7Ba_n%2C%20%5Cdots%2C%20a_n%7D_%7Bc_n%7D%20%5C%7D%2C)](#_)
+
+где [![\\ c_i](https://latex.codecogs.com/svg.latex?%5C%5C%20c_i)](#_) — количество элементов типа [![\\ a_i](https://latex.codecogs.com/svg.latex?%5C%5C%20a_i)](#_).  
+
+**Требуется**: найти все подмножества [![\\ S \subseteq M](https://latex.codecogs.com/svg.latex?%5C%5C%20S%20%5Csubseteq%20M)](#_) размера [![\\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)](#_), где все элементы в [![\\ S](https://latex.codecogs.com/svg.latex?%5C%5C%20S)](#_) имеют **разные типы**.  
+
+### Пример
+Для `[1, 2, 1]` (типы `A, B, C`):  
+- \( M = \{A_1, B_1, B_2, C_1\} \),  
+- \( k = 2 \):  
+  \[
+  [A_1, B_1], [A_1, B_2], [A_1, C_1], [B_1, C_1], [B_2, C_1].
+  \]  
+
+### Математическая запись
+Множество всех `k`-комбинаций:  
+\[
+\mathcal{C}_k = \left\{ \{x_{1,j_1}, x_{2,j_2}, \dots, x_{k,j_k}\} \ \Bigg|\ 
+\begin{aligned}
+&1 \leq j_i \leq c_i, \\
+&\text{типы } x_{1,j_1}, x_{2,j_2}, \dots, x_{k,j_k} \text{ различны}
+\end{aligned}
+\right\}.
+\]  
+
+### Количество комбинаций
+Вычисляется через генерацию всех сочетаний типов длины \( k \) и перемножение их кратностей:  
+\[
+|\mathcal{C}_k| = \sum_{1 \leq i_1 < i_2 < \dots < i_k \leq n} c_{i_1} \cdot c_{i_2} \cdot \dots \cdot c_{i_k}.
+\]  
+Для `[1, 2, 1]` и \( k=2 \):  
+\[
+1 \cdot 2 + 1 \cdot 1 + 2 \cdot 1 = 5.
+\]  
+
 Дано:
 * Массив [c1, c2, ..., cn], где ci - количество элементов типа i.
