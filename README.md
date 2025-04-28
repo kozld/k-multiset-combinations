@@ -184,6 +184,9 @@ GET /api/v1/status HTTP/1.1
 }
 ```
 
+### Swagger
+Swagger доступен по ```/swagger```
+
 ## Tags
 
 * #nestjs 
