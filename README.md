@@ -67,15 +67,15 @@ EOF && source .env
 1.2. Запуск экземпляра MySQL
 
 ```bash
-docker run mysql:8.0 -d \
+docker run \
 -e MYSQL_ROOT_PASSWORD=root \
 -e MYSQL_DATABASE=${DB_NAME} \
 -e MYSQL_USER=${DB_USER} \
 -e MYSQL_PASSWORD=${DB_PASSWORD} \
 -v ${PWD}/mysql_data:/var/lib/mysql \
--p ${DB_PORT}$:3306
+-p ${DB_PORT}:3306 -d mysql:8.0
 ```
-(либо любым другим предпочтительным спобом).
+(либо любым другим предпочтительным способом).
 
 #### 2. Запуск сервиса
 2.1. Установка зависимостей:  

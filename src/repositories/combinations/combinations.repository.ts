@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import type { Connection, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import type { Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 type Combination = string[];
 
@@ -9,7 +9,7 @@ const BATCH_SIZE = 10_000;
 @Injectable()
 export class CombinationsRepository {
     constructor(
-        @Inject('DBConnectionToken') private connection: Connection,
+        @Inject('DBConnectionToken') private pool: Pool,
     ) {}
 
     /**
@@ -25,11 +25,12 @@ export class CombinationsRepository {
         requestBodyRaw: string,
         responseBodyRaw: string,
     ): Promise<number> {
+        const connection = await this.pool.getConnection();
         try {
-            await this.connection.beginTransaction();
+            await connection.beginTransaction();
 
             // 1. Вставляем запись в responses
-            const [responseResult] = await this.connection.execute<ResultSetHeader>(
+            const [responseResult] = await connection.execute<ResultSetHeader>(
                 `INSERT INTO responses (request_body_raw, response_body_raw) VALUES (?, ?)`,
                 [requestBodyRaw, responseBodyRaw]
             );
@@ -41,7 +42,7 @@ export class CombinationsRepository {
                 const combinationsValues = batch.map(() => [responseId]);
 
                 console.log('starts inserting combinations batch...');
-                await this.connection.query<ResultSetHeader>(
+                await connection.query<ResultSetHeader>(
                     `INSERT INTO combinations (response_id) VALUES ?`,
                     [combinationsValues]
                 );
@@ -49,7 +50,7 @@ export class CombinationsRepository {
             }
 
             // 3. Чтение combination ids
-            const [comboRows] = await this.connection.query<RowDataPacket[]>(
+            const [comboRows] = await connection.query<RowDataPacket[]>(
                 `SELECT id FROM combinations
                 WHERE response_id = ? ORDER BY id ASC`,
                 [responseId]
@@ -74,7 +75,7 @@ export class CombinationsRepository {
 
                 if (itemsValues.length > 0) {
                     console.log('starts inserting items batch...');
-                    await this.connection.query(
+                    await connection.query(
                         `INSERT INTO items (combination_id, label) VALUES ?`,
                         [itemsValues]
                     );
@@ -82,13 +83,15 @@ export class CombinationsRepository {
                 }
             }
 
-            await this.connection.commit();
+            await connection.commit();
             console.log('✅ Bulk transaction committed');
             return responseId;
         } catch (err) {
-            await this.connection.rollback();
+            await connection.rollback();
             console.error('❌ Transaction rolled back', err);
             throw err;
+        } finally {
+            connection.release();
         }
     }
 }
