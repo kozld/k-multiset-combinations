@@ -61,7 +61,9 @@ export DB_PORT=3306
 export DB_USER=user52
 export DB_PASSWORD=13131313
 export DB_NAME=mydb
-EOF && source .env
+EOF
+
+source .env
 ```
 
 1.2. Запуск экземпляра MySQL
