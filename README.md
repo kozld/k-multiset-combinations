@@ -1,57 +1,72 @@
-![Made with Love in Armenia](https://img.shields.io/badge/Made%20with%20Love%20in-Armenia-red?style=for-the-badge&logo=gitlab)
 # k-multiset-combinations
 
-REST API сервис для генерации комбинаторных сочетаний (k-комбинаций) из [мультимножеств](https://en.wikipedia.org/wiki/Multiset) с сохранением результатов в БД.
+A REST API service for generating combinatorial selections (k-combinations) from [multisets](https://en.wikipedia.org/wiki/Multiset) with results persisted in a database.
 
-Проект разработан в рамках [тестового задания](./resources/assets/task.pdf).
+This project was developed as part of a [technical assignment](./resources/assets/task.pdf).
 
-Поиск комбинаций заданной длины [![\\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)](#_) в мультимножестве сводится к нахождению всех сочетаний типов длины [![\\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)](#_) и перемножению их кратностей.
+The task of finding combinations of length
+![\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)
+from a multiset is reduced to finding all type combinations of size
+![\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)
+and multiplying their multiplicities.
 
-### Уточненная постановка задачи
+### Problem Statement
 
-Дано мультимножество:
-
-<div align="center">
-
-[![\\ M = \{ \underbrace{a_1, \dots, a_1}_{c_1}, \underbrace{a_2, \dots, a_2}_{c_2}, \dots, \underbrace{a_n, \dots, a_n}_{c_n} \},](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7B%20%5Cunderbrace%7Ba_1%2C%20%5Cdots%2C%20a_1%7D_%7Bc_1%7D%2C%20%5Cunderbrace%7Ba_2%2C%20%5Cdots%2C%20a_2%7D_%7Bc_2%7D%2C%20%5Cdots%2C%20%5Cunderbrace%7Ba_n%2C%20%5Cdots%2C%20a_n%7D_%7Bc_n%7D%20%5C%7D%2C)](#_)
-
-</div>
-
-где [![\\ c_i](https://latex.codecogs.com/svg.latex?%5C%5C%20c_i)](#_) — количество элементов типа [![\\ a_i](https://latex.codecogs.com/svg.latex?%5C%5C%20a_i)](#_).  
-
-**Требуется**: найти все подмножества [![\\ S \subseteq M](https://latex.codecogs.com/svg.latex?%5C%5C%20S%20%5Csubseteq%20M)](#_) размера [![\\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)](#_), где все элементы в [![\\ S](https://latex.codecogs.com/svg.latex?%5C%5C%20S)](#_) имеют **разные типы**.  
-
-### Пример
-Для `[1, 2, 1]` (типы `A, B, C`):  
-- [![\\ M = \{A_1, B_1, B_2, C_1\},](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7BA_1%2C%20B_1%2C%20B_2%2C%20C_1%5C%7D%2C)](#_)  
-- [![\\ k = 2:](https://latex.codecogs.com/svg.latex?%5C%5C%20k%20%3D%202%3A)](#_)  
+Given a multiset:
 
 <div align="center">
 
-[![\\ {[A_1, B_1], [A_1, B_2], [A_1, C_1], [B_1, C_1], [B_2, C_1]}. \\  \\ ](https://latex.codecogs.com/svg.latex?%5C%5C%20%7B%5BA_1%2C%20B_1%5D%2C%20%5BA_1%2C%20B_2%5D%2C%20%5BA_1%2C%20C_1%5D%2C%20%5BB_1%2C%20C_1%5D%2C%20%5BB_2%2C%20C_1%5D%7D.%20%5C%5C%20%20%5C%5C%20)](#_)
+![\ M = { \underbrace{a\_1, \dots, a\_1}{c\_1}, \underbrace{a\_2, \dots, a\_2}{c\_2}, \dots, \underbrace{a\_n, \dots, a\_n}\_{c\_n} },](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7B%20%5Cunderbrace%7Ba_1%2C%20%5Cdots%2C%20a_1%7D_%7Bc_1%7D%2C%20%5Cunderbrace%7Ba_2%2C%20%5Cdots%2C%20a_2%7D_%7Bc_2%7D%2C%20%5Cdots%2C%20%5Cunderbrace%7Ba_n%2C%20%5Cdots%2C%20a_n%7D_%7Bc_n%7D%20%5C%7D%2C)
 
 </div>
 
-## Особенности реализации
+where
+![\ c\_i](https://latex.codecogs.com/svg.latex?%5C%5C%20c_i)
+is the number of elements of type
+![\ a\_i](https://latex.codecogs.com/svg.latex?%5C%5C%20a_i).
 
-* Использование эффективного алгоритма поиска в глубину (DFS).
-* Транзакционная вставка данных в MySQL через BULK INSERT с регулируемым BATCH_SIZE.
-* Чистая архитектура сервиса, изолированность модулей, покрытие тестами.
-* Готовые к использованию контейнеризация, CI/CD конвейер и Helm декларации для Kubernetes.
+**Goal**: Find all subsets
+![\ S \subseteq M](https://latex.codecogs.com/svg.latex?%5C%5C%20S%20%5Csubseteq%20M)
+of size
+![\ k](https://latex.codecogs.com/svg.latex?%5C%5C%20k)
+where all elements in
+![\ S](https://latex.codecogs.com/svg.latex?%5C%5C%20S)
+are of **distinct types**.
 
-## Идеи по улучшению
+### Example
 
-* Отложенная запись в базу данных при больших количествах комбинаций, чтобы сразу отдавать клиенту результат генерации.
-* Воркерный конвейер работы с базой данных, на основе статусов (конечный автомат).
-* Использование потоков (пакеты "node:stream", "rxjs") для снятия нагрузки с runtime-памяти при больших наборах комбинаций.
-* Использование "ленивых" (lazy) вычислений для генерации комбинаций (функции-генераторы, оператор yield).
+For `[1, 2, 1]` (types `A, B, C`):
 
-## Запуск
+* ![\ M = {A\_1, B\_1, B\_2, C\_1},](https://latex.codecogs.com/svg.latex?%5C%5C%20M%20%3D%20%5C%7BA_1%2C%20B_1%2C%20B_2%2C%20C_1%5C%7D%2C)
+* ![\ k = 2:](https://latex.codecogs.com/svg.latex?%5C%5C%20k%20%3D%202%3A)
 
-### Локальный запуск
+<div align="center">
 
-#### 1. Подготовка окружения
-1.1. Настройка переменных окружения
+![\ {\[A\_1, B\_1\], \[A\_1, B\_2\], \[A\_1, C\_1\], \[B\_1, C\_1\], \[B\_2, C\_1\]}. \  \ ](https://latex.codecogs.com/svg.latex?%5C%5C%20%7B%5BA_1%2C%20B_1%5D%2C%20%5BA_1%2C%20B_2%5D%2C%20%5BA_1%2C%20C_1%5D%2C%20%5BB_1%2C%20C_1%5D%2C%20%5BB_2%2C%20C_1%5D%7D.%20%5C%5C%20%20%5C%5C%20)
+
+</div>
+
+## Key Features
+
+* Efficient depth-first search (DFS) algorithm.
+* Transactional bulk insertion into MySQL with adjustable `BATCH_SIZE`.
+* Clean architecture with modular isolation and unit test coverage.
+* Ready-to-use containerization, CI/CD pipeline, and Helm charts for Kubernetes deployment.
+
+## Potential Improvements
+
+* Deferred database writes for large result sets to respond faster to the client.
+* Database worker pipeline based on status transitions (finite state machine).
+* Use of streaming (e.g., `node:stream`, `rxjs`) to reduce runtime memory usage with large combinations.
+* Lazy evaluation (generators, `yield`) for on-demand combination generation.
+
+## Running the App
+
+### Local Setup
+
+#### 1. Environment setup
+
+1.1. Define environment variables:
 
 ```bash
 cat <<EOF > .env
@@ -66,7 +81,7 @@ EOF
 source .env
 ```
 
-1.2. Запуск экземпляра MySQL
+1.2. Start a MySQL instance:
 
 ```bash
 docker run \
@@ -77,73 +92,85 @@ docker run \
 -v ${PWD}/mysql_data:/var/lib/mysql \
 -p ${DB_PORT}:3306 -d mysql:8.0
 ```
-(либо любым другим предпочтительным способом).
 
-#### 2. Запуск сервиса
-2.1. Установка зависимостей:  
-```npm install```  
+(or use any other preferred method)
 
-2.2. Транспиляция в js (сборка):  
-```npm run build```
+#### 2. Start the service
 
-2.3. Запуск миграций базы данных:  
-```npm run migrate up ```
+2.1. Install dependencies:
 
-2.4. Старт сервиса:  
-```npm run start```
+````bash
+npm install```
 
-### Запуск в Docker
+2.2. Transpile to JS (build):
+```bash
+npm run build```
 
-```source .env && docker compose up -d```
+2.3. Run DB migrations:
+```bash
+npm run migrate up```
 
-## Структура папок
+2.4. Start the service:
+```bash
+npm run start```
+
+### Run with Docker
+
+```bash
+source .env && docker compose up -d
+````
+
+## Folder Structure
 
 ```bash
 k-multiset-combinations/
-├── __tests__/              # Тестовые сценарии
-├── db/migrations/          # SQL миграции для базы данных
-├── deployments/helm/       # Декларации Helm для запуска в Kubernetes
-├── src/                   
-│   ├── app/                # Точка входа: экспортирует основную функцию сервиса
-│   ├── dtos/               # Структуры передачи данных с валидацией
-│   ├── gateways/           # Контроллеры API
-│   ├── library/            # Библиотека "чистых" функций
-│   ├── repositories/       # Модуль работы с базой данных
-│   └── services/           # Бизнес-логика приложения
+├── __tests__/              # Test scenarios
+├── db/migrations/          # SQL migrations
+├── deployments/helm/       # Helm charts for Kubernetes
+├── src/
+│   ├── app/                # Entry point: main service function
+│   ├── dtos/               # Data transfer objects with validation
+│   ├── gateways/           # API controllers
+│   ├── library/            # Pure logic functions
+│   ├── repositories/       # Database access layer
+│   └── services/           # Core application logic
 │
-├── scripts/                
-│   └── migration.ts        # Управление миграциями базы данных
+├── scripts/
+│   └── migration.ts        # DB migration runner
 │
-├── .env.test               # Переменные окружения для локального запуска
-├── Dockerfile              # Инструкции для создания Docker-образа
-├── docker-compose.yml      # Для запуска сервиса и окружения через docker-compose
-├── start.sh                # Запуск миграций и основного сервиса 
-├── .gitlab-ci.yml          # Конфигурация CI/CD пайплайна в GitLab
-├── jest.config.ts          # Конфигурация для тестового фреймворка Jest
-├── package.json            # Метаинформация о проекте и зависимости
-└── tsconfig.json           # Конфигурация TypeScript
+├── .env.test               # Env vars for testing
+├── Dockerfile              # Docker image definition
+├── docker-compose.yml      # Compose file for full stack
+├── start.sh                # Entrypoint script
+├── .gitlab-ci.yml          # GitLab CI/CD pipeline config
+├── jest.config.ts          # Jest test configuration
+├── package.json            # Project metadata & dependencies
+└── tsconfig.json           # TypeScript configuration
 ```
 
-## Database design
+## Database Design
 
 <center>
 
-![Схема базы данных](./resources/assets/schema.png)
+![Database Schema](./resources/assets/schema.png)
 
 </center>
 
-## Документация API
+## API Documentation
 
 ### POST /api/v1/generate
-Генерация нового набора комбинаций
 
-#### Параметры запроса (JSON):
-| Поле         | Тип     | Обязательный | Описание                     |
-|--------------|---------|--------------|------------------------------|
-| `items`      | number[]  | да           | Мультимножество           |
-| `length`   | number  | да           | Длина комбинации                       |
+Generate a new combination set
 
-#### Пример запроса:
+#### Request Parameters (JSON):
+
+| Field    | Type      | Required | Description               |
+| -------- | --------- | -------- | ------------------------- |
+| `items`  | number\[] | yes      | The input multiset        |
+| `length` | number    | yes      | Length of the combination |
+
+#### Sample Request:
+
 ```http
 POST /api/v1/generate HTTP/1.1
 Content-Type: application/json
@@ -153,7 +180,8 @@ Content-Type: application/json
 }
 ```
 
-#### Пример ответа:
+#### Sample Response:
+
 ```json
 {
     "id": 1,
@@ -168,14 +196,17 @@ Content-Type: application/json
 ```
 
 ### GET /api/v1/status
-Получение информации о состоянии сервиса
 
-#### Пример запроса:
+Retrieve service health/status
+
+#### Sample Request:
+
 ```http
 GET /api/v1/status HTTP/1.1
 ```
 
-#### Пример ответа:
+#### Sample Response:
+
 ```json
 {
     "status": "ok",
@@ -187,12 +218,13 @@ GET /api/v1/status HTTP/1.1
 ```
 
 ### Swagger
-Swagger доступен по ```/swagger```
+
+Swagger is available at `/swagger`
 
 ## Tags
 
-* #nestjs 
-* #typescript 
-* #mysql2 
-* #docker 
-* #k8s
+* \#nestjs
+* \#typescript
+* \#mysql2
+* \#docker
+* \#k8s
